@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusEye - Student Dashboard</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <div class="logo-icon">👁️</div>
+      <span>CampusEye</span>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="/dashboard" id="nav-dashboard">Dashboard</a>
+      <a href="/report" id="nav-report">Report Issue</a>
+      <a href="/my-complaints" id="nav-my">My Complaints</a>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    <div class="user-info" id="userInfo"></div>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <h1 class="card-title">Welcome, <span id="studentName">Student</span>! 👋</h1>
+        <a href="/report" class="btn btn-primary btn-sm" style="width:auto; text-decoration:none; display:inline-block;">+ Report New Issue</a>
+      </div>
+      <p style="color:var(--gray);">Here's what's happening on campus right now.</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">📋</div>
+        <div class="stat-value" id="totalComplaints">0</div>
+        <div class="stat-label">My Complaints</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">⏳</div>
+        <div class="stat-value" id="pendingCount">0</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">✅</div>
+        <div class="stat-value" id="resolvedCount">0</div>
+        <div class="stat-label">Resolved</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red">🔥</div>
+        <div class="stat-value" id="hotspotCount">0</div>
+        <div class="stat-label">Hotspots</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">🗺️ Campus Issue Map</h2>
+      </div>
+      <div class="legend">
+        <span style="font-weight:600;">Complaint Density:</span>
+        <div class="legend-item"><div class="legend-dot dot-red"></div>High (5+)</div>
+        <div class="legend-item"><div class="legend-dot dot-yellow"></div>Medium (2-4)</div>
+        <div class="legend-item"><div class="legend-dot dot-green"></div>Low (0-1)</div>
+      </div>
+      <div class="map-container">
+        <div id="map"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">📋 My Recent Complaints</h2>
+        <a href="/my-complaints" class="btn btn-primary btn-sm" style="width:auto; text-decoration:none; display:inline-block;">View All</a>
+      </div>
+      <div id="recentComplaints" class="complaints-grid">
+        <div class="loading"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/main.js"></script>
+  <script>
+    const user = requireAuth();
+    if (!user) window.location.href = '/login';
+    document.getElementById('studentName').textContent = user.name;
+    let map;
+
+    async function loadDashboard() {
+      try {
+        const res = await fetch(`${API_BASE}/complaints/my/${user.userId}`);
+        const complaints = await res.json();
+        document.getElementById('totalComplaints').textContent = complaints.length;
+        document.getElementById('pendingCount').textContent = complaints.filter(c => c.status === 'Pending').length;
+        document.getElementById('resolvedCount').textContent = complaints.filter(c => c.status === 'Resolved').length;
+        
+        const allRes = await fetch(`${API_BASE}/complaints/all`);
+        const allComplaints = await allRes.json();
+        const locationCounts = {};
+        allComplaints.forEach(c => { locationCounts[c.location] = (locationCounts[c.location] || 0) + 1; });
+        const hotspots = Object.entries(locationCounts).filter(([_, count]) => count >= 3);
+        document.getElementById('hotspotCount').textContent = hotspots.length;
+
+        const recentContainer = document.getElementById('recentComplaints');
+        if (complaints.length === 0) {
+          recentContainer.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">📭</div><h3>No complaints yet</h3><p>Report your first issue to see it here!</p></div>`;
+        } else {
+          recentContainer.innerHTML = complaints.slice(0, 3).map(c => `
+            <div class="complaint-card ${c.status.toLowerCase().replace(' ', '-')}">
+              <div class="complaint-header">
+                <span class="complaint-id">#${c._id.slice(-4).toUpperCase()}</span>
+                <span class="complaint-status status-${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span>
+              </div>
+              <div class="complaint-title">${c.title}</div>
+              <div class="complaint-desc">${c.description}</div>
+              <div class="complaint-meta">
+                <span>📍 ${c.location}</span>
+                <span>📁 ${c.category}</span>
+                <span>📅 ${formatDate(c.createdAt)}</span>
+              </div>
+            </div>
+          `).join('');
+        }
+        initMap(allComplaints);
+      } catch (err) { showToast('Failed to load dashboard', 'error'); }
+    }
+
+    function initMap(complaints) {
+      map = L.map('map').setView([28.6135, 77.2085], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+      const locationCounts = {};
+      complaints.forEach(c => { locationCounts[c.location] = (locationCounts[c.location] || 0) + 1; });
+      Object.entries(CAMPUS_LOCATIONS).forEach(([name, coords]) => {
+        const count = locationCounts[name] || 0;
+        let color, radius;
+        if (count >= 5) { color = '#ff4444'; radius = 35; }
+        else if (count >= 2) { color = '#ffbb33'; radius = 25; }
+        else { color = '#00C851'; radius = 15; }
+        L.circle(coords, { color: color, fillColor: color, fillOpacity: 0.4, radius: radius, weight: 2 }).addTo(map).bindPopup(`<b>${name}</b><br>${count} complaint${count !== 1 ? 's' : ''}`);
+        L.marker(coords, { icon: L.divIcon({ className: 'location-label', html: `<div style="background:white; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:600; box-shadow:0 2px 8px rgba(0,0,0,0.15); white-space:nowrap;">${name}</div>`, iconSize: [80, 20], iconAnchor: [40, 10] }) }).addTo(map);
+      });
+    }
+    loadDashboard();
+  </script>
+</body>
+</html>
