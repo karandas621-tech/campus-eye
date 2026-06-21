@@ -1,0 +1,45 @@
+<!-- ============================================ -->
+<!-- PUBLIC/ADMIN/ADMIN-LOGIN.HTML -->
+<!-- ============================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Campus-Eye</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">🏫 Campus-Eye</div>
+        <a href="../index.html" class="back-link">← Back</a>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-box">
+            <h2>Admin Login</h2>
+            <form id="adminLoginForm">
+                <input type="text" id="adminUser" placeholder="Username" value="admin" required>
+                <input type="password" id="adminPass" placeholder="Password" value="admin123" required>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            <p class="hint">Default: admin / admin123</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+            
+            if (user === 'admin' && pass === 'admin123') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                alert('Invalid credentials');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!-- ============================================ -->
+<!-- PUBLIC/STUDENT/REPORT.HTML -->
+<!-- ============================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Issue - Campus-Eye</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">🏫 Campus-Eye</div>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="my-complaints.html">My Complaints</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Report an Issue</h2>
+        <form id="reportForm" class="report-form">
+            <div class="form-group">
+                <label>Issue Title</label>
+                <input type="text" id="title" placeholder="e.g., WiFi not working" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="description" rows="4" placeholder="Describe the problem..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <select id="location" required>
+                    <option value="">Select Location</option>
+                    <option value="Hostel A">Hostel A</option>
+                    <option value="Hostel B">Hostel B</option>
+                    <option value="Hostel C">Hostel C</option>
+                    <option value="Library">Library</option>
+                    <option value="Canteen">Canteen</option>
+                    <option value="Academic Block">Academic Block</option>
+                    <option value="Sports Complex">Sports Complex</option>
+                    <option value="Parking">Parking</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select id="category" required>
+                    <option value="">Select Category</option>
+                    <option value="Network">Network</option>
+                    <option value="Electricity">Electricity</option>
+                    <option value="Water">Water</option>
+                    <option value="Cleanliness">Cleanliness</option>
+                    <option value="Security">Security</option>
+                    <option value="Infrastructure">Infrastructure</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Pin Location on Map (Click to set)</label>
+                <div id="map" style="height: 300px; border-radius: 8px;"></div>
+                <input type="hidden" id="lat" value="28.6139">
+                <input type="hidden" id="lng" value="77.2090">
+            </div>
+
+            <button type="submit" class="btn-primary">Submit Complaint</button>
+        </form>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        if (!localStorage.getItem('studentName')) {
+            window.location.href = 'login.html';
+        }
+
+        const map = L.map('map').setView([28.6139, 77.2090], 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        
+        let marker;
+        map.on('click', (e) => {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker(e.latlng).addTo(map);
+            document.getElementById('lat').value = e.latlng.lat;
+            document.getElementById('lng').value = e.latlng.lng;
+        });
+
+        document.getElementById('reportForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                location: document.getElementById('location').value,
+                category: document.getElementById('category').value,
+                lat: parseFloat(document.getElementById('lat').value),
+                lng: parseFloat(document.getElementById('lng').value),
+                studentName: localStorage.getItem('studentName'),
+                status: 'Pending'
+            };
+
+            try {
+                const res = await fetch('/api/complaints', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    alert('Complaint submitted successfully! ID: #' + (await res.json()).id);
+                    window.location.href = 'my-complaints.html';
+                } else {
+                    alert('Error submitting complaint');
+                }
+            } catch (err) {
+                alert('Network error');
+            }
+        });
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '../index.html';
+        }
+    </script>
+</body>
+</html>

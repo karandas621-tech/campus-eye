@@ -1,7 +1,10 @@
+// ============================================
+// PACKAGE.JSON
+// ============================================
 {
-  "name": "campuseye",
+  "name": "campus-eye",
   "version": "1.0.0",
-  "description": "Campus Issue Reporting System",
+  "description": "Smart Campus Issue Reporting System",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,10 +12,7 @@
   },
   "dependencies": {
     "express": "^4.18.2",
-    "mongoose": "^7.5.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "bcryptjs": "^2.4.3"
+    "mongoose": "^7.5.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
