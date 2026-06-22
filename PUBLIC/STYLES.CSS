@@ -1,181 +1,23 @@
- /* ============================================ */
-/* CAMPUS-EYE MVP - MINIMAL CSS */
-/* ============================================ */
+ /* MINIMAL CSS - Campus-Eye */
+* { margin: 0; padding: 0; font-family: Arial; }
+body { background: #f0f0f0; }
 
-/* Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
+.navbar { background: #333; color: white; padding: 15px; }
+.navbar a { color: white; margin-left: 15px; text-decoration: none; }
 
-body {
-    background: #f5f5f5;
-}
+.btn { background: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; text-decoration: none; display: inline-block; }
 
-/* --- NAVBAR (all pages) --- */
-.navbar {
-    background: #2c3e50;
-    color: white;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+.auth-box { width: 300px; margin: 50px auto; background: white; padding: 20px; }
+input, select, textarea { width: 100%; padding: 10px; margin: 8px 0; }
 
-.navbar a {
-    color: white;
-    text-decoration: none;
-    margin-left: 15px;
-}
+#map { height: 400px; border: 1px solid #ccc; margin: 15px 0; }
 
-/* --- BUTTONS (all pages) --- */
-.btn {
-    background: #3498db;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-}
+.card { background: white; padding: 15px; margin: 10px 0; border-left: 3px solid #007bff; }
+.badge { padding: 5px 10px; color: white; font-size: 12px; }
+.badge.pending { background: red; }
+.badge.in-progress { background: orange; }
+.badge.resolved { background: green; }
 
-.btn:hover {
-    background: #2980b9;
-}
-
-/* --- LOGIN BOX (login pages) --- */
-.auth-box {
-    width: 350px;
-    margin: 80px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 5px;
-}
-
-.auth-box input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-}
-
-/* --- FORMS (report page) --- */
-.form-box input,
-.form-box textarea,
-.form-box select {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border: 1px solid #ddd;
-}
-
-/* --- MAP (dashboard + admin) --- */
-#map {
-    height: 400px;
-    border: 2px solid #ddd;
-    margin: 15px 0;
-}
-
-/* --- COMPLAINT CARDS (my-complaints + admin) --- */
-.card {
-    background: white;
-    padding: 15px;
-    margin: 10px 0;
-    border-left: 4px solid #3498db;
-}
-
-/* --- STATUS BADGES (my-complaints + admin) --- */
-.badge {
-    padding: 5px 10px;
-    color: white;
-    font-size: 12px;
-}
-
-.badge.pending { background: #e74c3c; }
-.badge.in-progress { background: #f39c12; }
-.badge.resolved { background: #27ae60; }
-
-/* --- ADMIN DASHBOARD LAYOUT --- */
-.admin-grid {
-    display: flex;
-    gap: 20px;
-}
-
-.admin-grid > div {
-    flex: 1;
-    background: white;
-    padding: 15px;
-}
-
-/* --- COMPLAINT ROW (admin list) --- */
-.complaint-row {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-}
-
-/* --- FILTER BUTTONS (admin) --- */
-.filter-btn {
-    padding: 6px 12px;
-    margin: 2px;
-    border: 1px solid #ddd;
-    background: white;
-    cursor: pointer;
-}
-
-.filter-btn.active {
-    background: #3498db;
-    color: white;
-}
-
-/* --- UTILITIES --- */
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 15px;
-}
-
-.flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* --- LANDING PAGE --- */
-.hero {
-    text-align: center;
-    padding: 100px 20px;
-    background: #3498db;
-    color: white;
-}
-
-.features {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    padding: 40px;
-}
-
-.feature-card {
-    background: white;
-    padding: 25px;
-    width: 250px;
-    text-align: center;
-}
-
-/* --- MOBILE --- */
-@media (max-width: 768px) {
-    .features,
-    .admin-grid {
-        flex-direction: column;
-    }
-}
+.container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+.admin-grid { display: flex; gap: 20px; }
+.admin-grid > div { flex: 1; background: white; padding: 15px; }
