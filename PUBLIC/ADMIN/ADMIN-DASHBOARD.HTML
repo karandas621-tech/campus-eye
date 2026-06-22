@@ -1,196 +1,87 @@
-<!-- ============================================ -->
-<!-- PUBLIC/ADMIN/ADMIN-DASHBOARD.HTML -->
-<!-- ============================================ -->
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Campus-Eye</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.css" />
 </head>
 <body>
-    <nav class="navbar admin-nav">
+    <nav class="navbar">
         <div class="logo">🏫 Campus-Eye Admin</div>
-        <div class="nav-links">
-            <span id="stats"></span>
-            <a href="#" onclick="logout()">Logout</a>
-        </div>
+        <a href="#" onclick="logout()">Logout</a>
     </nav>
 
-    <div class="admin-container">
-        <div class="admin-header">
-            <h2>Complaint Management</h2>
-            <div class="filters">
-                <button class="filter-btn active" onclick="filterStatus('all')">All</button>
-                <button class="filter-btn" onclick="filterStatus('Pending')">Pending</button>
-                <button class="filter-btn" onclick="filterStatus('In Progress')">In Progress</button>
-                <button class="filter-btn" onclick="filterStatus('Resolved')">Resolved</button>
-            </div>
-        </div>
+    <div class="container">
+        <h2>Complaint Management</h2>
+        
+        <button class="btn" onclick="filter('all')">All</button>
+        <button class="btn" onclick="filter('Pending')">Pending</button>
+        <button class="btn" onclick="filter('In Progress')">In Progress</button>
+        <button class="btn" onclick="filter('Resolved')">Resolved</button>
 
-        <div class="dashboard-grid">
-            <div class="map-section">
-                <h3>Heatmap View</h3>
-                <div id="heatmap"></div>
-                <div class="legend">
-                    <span><span class="dot red"></span> High Density</span>
-                    <span><span class="dot yellow"></span> Medium</span>
-                    <span><span class="dot green"></span> Low</span>
-                </div>
-            </div>
+        <div id="map"></div>
 
-            <div class="complaints-section">
-                <h3>All Complaints</h3>
-                <div id="adminComplaintsList" class="admin-complaints-list"></div>
-            </div>
-        </div>
+        <h3>All Complaints</h3>
+        <div id="list"></div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
     <script>
-        if (!localStorage.getItem('adminLoggedIn')) {
-            window.location.href = 'admin-login.html';
-        }
+        if (!localStorage.getItem('adminLoggedIn')) location.href = 'admin-login.html';
 
-        let currentFilter = 'all';
-        let map, heatLayer;
+        let map, heat, currentFilter = 'all';
 
-        function initMap() {
-            map = L.map('heatmap').setView([28.6139, 77.2090], 15);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
-        }
+        map = L.map('map').setView([28.6139, 77.2090], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        async function loadDashboard() {
-            try {
-                const res = await fetch('/api/complaints');
-                const complaints = await res.json();
-                
-                // Update stats
-                const pending = complaints.filter(c => c.status === 'Pending').length;
-                const inProgress = complaints.filter(c => c.status === 'In Progress').length;
-                const resolved = complaints.filter(c => c.status === 'Resolved').length;
-                document.getElementById('stats').innerHTML = 
-                    `📋 ${complaints.length} | 🔴 ${pending} | 🟡 ${inProgress} | 🟢 ${resolved}`;
+        async function load() {
+            const res = await fetch('/api/complaints');
+            const data = await res.json();
 
-                // Update heatmap
-                updateHeatmap(complaints);
+            if (heat) map.removeLayer(heat);
+            const points = data.map(c => [c.lat, c.lng, 0.5]);
+            if (points.length) heat = L.heatLayer(points, {radius: 50, blur: 30}).addTo(map);
 
-                // Update list
-                renderComplaintsList(complaints);
-            } catch (err) {
-                console.error('Error:', err);
-            }
-        }
-
-        function updateHeatmap(complaints) {
-            if (heatLayer) map.removeLayer(heatLayer);
+            const filtered = currentFilter === 'all' ? data : data.filter(c => c.status === currentFilter);
             
-            // Group by location and count
-            const locationCounts = {};
-            complaints.forEach(c => {
-                const key = `${c.lat},${c.lng}`;
-                locationCounts[key] = (locationCounts[key] || 0) + 1;
-            });
-
-            const heatData = Object.entries(locationCounts).map(([key, count]) => {
-                const [lat, lng] = key.split(',').map(Number);
-                return [lat, lng, Math.min(count * 0.5, 1)]; // intensity
-            });
-
-            if (heatData.length > 0) {
-                heatLayer = L.heatLayer(heatData, {
-                    radius: 50,
-                    blur: 30,
-                    maxZoom: 17,
-                    gradient: {0.2: 'blue', 0.4: 'lime', 0.6: 'yellow', 0.8: 'orange', 1: 'red'}
-                }).addTo(map);
-            }
-
-            // Also add markers for context
-            complaints.forEach(c => {
-                const color = c.status === 'Resolved' ? 'green' : 
-                             c.status === 'In Progress' ? 'orange' : 'red';
-                L.circleMarker([c.lat, c.lng], {
-                    radius: 8,
-                    fillColor: color,
-                    color: '#fff',
-                    weight: 2,
-                    fillOpacity: 0.8
-                }).addTo(map).bindPopup(`${c.title} - ${c.status}`);
-            });
-        }
-
-        function renderComplaintsList(complaints) {
-            const filtered = currentFilter === 'all' 
-                ? complaints 
-                : complaints.filter(c => c.status === currentFilter);
-
-            const container = document.getElementById('adminComplaintsList');
-            
-            if (filtered.length === 0) {
-                container.innerHTML = '<p class="empty">No complaints in this category</p>';
-                return;
-            }
-
-            container.innerHTML = filtered.map(c => `
-                <div class="admin-complaint-card">
-                    <div class="complaint-info">
-                        <h4>#${c._id?.toString().slice(-4)} - ${c.title}</h4>
-                        <p>📍 ${c.location} | 🏷️ ${c.category} | 👤 ${c.studentName}</p>
-                        <p class="desc">${c.description}</p>
-                        <p class="date">${new Date(c.createdAt).toLocaleString()}</p>
-                    </div>
-                    <div class="complaint-actions">
-                        <span class="status-badge status-${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span>
-                        <select onchange="updateStatus('${c._id}', this.value)" class="status-select">
-                            <option value="">Change Status</option>
-                            <option value="Pending" ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                            <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                            <option value="Resolved" ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
-                        </select>
-                    </div>
+            document.getElementById('list').innerHTML = filtered.map(c => `
+                <div class="card">
+                    <b>#${c._id.toString().slice(-4)}</b> - ${c.title}
+                    <p>📍 ${c.location} | 👤 ${c.studentName} | <span class="badge ${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span></p>
+                    <select onchange="updateStatus('${c._id}', this.value)">
+                        <option value="">Change Status</option>
+                        <option ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                        <option ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                        <option ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                    </select>
                 </div>
             `).join('');
         }
 
         async function updateStatus(id, status) {
             if (!status) return;
-            try {
-                const res = await fetch(`/api/complaints/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status })
-                });
-                if (res.ok) {
-                    loadDashboard();
-                }
-            } catch (err) {
-                alert('Error updating status');
-            }
+            await fetch(`/api/complaints/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({status})
+            });
+            load();
         }
 
-        function filterStatus(status) {
+        function filter(status) {
             currentFilter = status;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent.includes(status) || (status === 'all' && btn.textContent === 'All'));
-            });
-            loadDashboard();
+            load();
         }
 
         function logout() {
             localStorage.removeItem('adminLoggedIn');
-            window.location.href = '../index.html';
+            location.href = '../index.html';
         }
 
-        initMap();
-        loadDashboard();
-        setInterval(loadDashboard, 10000); // Auto refresh every 10s
+        load();
+        setInterval(load, 10000);
     </script>
 </body>
 </html>

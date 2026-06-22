@@ -1,11 +1,7 @@
-<!-- ============================================ -->
-<!-- PUBLIC/STUDENT/MY-COMPLAINTS.HTML -->
-<!-- ============================================ -->
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Complaints - Campus-Eye</title>
     <link rel="stylesheet" href="../styles.css">
 </head>
@@ -14,59 +10,42 @@
         <div class="logo">🏫 Campus-Eye</div>
         <div class="nav-links">
             <a href="dashboard.html">Dashboard</a>
-            <a href="report.html">Report Issue</a>
+            <a href="report.html">Report</a>
             <a href="#" onclick="logout()">Logout</a>
         </div>
     </nav>
 
     <div class="container">
         <h2>My Complaints</h2>
-        <div id="complaintsList" class="complaints-grid"></div>
+        <div id="list"></div>
     </div>
 
     <script>
-        if (!localStorage.getItem('studentName')) {
-            window.location.href = 'login.html';
-        }
+        if (!localStorage.getItem('studentName')) location.href = 'login.html';
 
-        async function loadMyComplaints() {
-            const studentName = localStorage.getItem('studentName');
-            try {
-                const res = await fetch('/api/complaints');
-                const complaints = await res.json();
-                const mine = complaints.filter(c => c.studentName === studentName);
-                
-                const container = document.getElementById('complaintsList');
-                
-                if (mine.length === 0) {
-                    container.innerHTML = '<p class="empty">No complaints yet. <a href="report.html">Report one now!</a></p>';
-                    return;
-                }
+        async function load() {
+            const res = await fetch('/api/complaints');
+            const all = await res.json();
+            const mine = all.filter(c => c.studentName === localStorage.getItem('studentName'));
 
-                container.innerHTML = mine.map(c => `
-                    <div class="complaint-card">
-                        <div class="complaint-header">
-                            <span class="complaint-id">#${c._id?.toString().slice(-4) || '0000'}</span>
-                            <span class="status-badge status-${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span>
-                        </div>
-                        <h3>${c.title}</h3>
-                        <p class="location">📍 ${c.location}</p>
-                        <p class="category">🏷️ ${c.category}</p>
-                        <p class="description">${c.description}</p>
-                        <p class="date">📅 ${new Date(c.createdAt).toLocaleDateString()}</p>
-                    </div>
-                `).join('');
-            } catch (err) {
-                document.getElementById('complaintsList').innerHTML = '<p class="error">Error loading complaints</p>';
-            }
+            document.getElementById('list').innerHTML = mine.length ? mine.map(c => `
+                <div class="card">
+                    <b>#${c._id.toString().slice(-4)}</b> 
+                    <span class="badge ${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span>
+                    <h3>${c.title}</h3>
+                    <p>📍 ${c.location} | 🏷️ ${c.category}</p>
+                    <p>${c.description}</p>
+                    <small>📅 ${new Date(c.createdAt).toLocaleDateString()}</small>
+                </div>
+            `).join('') : '<p>No complaints yet. <a href="report.html">Report one!</a></p>';
         }
 
         function logout() {
             localStorage.clear();
-            window.location.href = '../index.html';
+            location.href = '../index.html';
         }
 
-        loadMyComplaints();
+        load();
     </script>
 </body>
 </html>
