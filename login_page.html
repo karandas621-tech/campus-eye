@@ -1,60 +1,74 @@
- <!DOCTYPE html>
- <html lang="en">
- <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login page</title>
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing: border-box;
-        }
-        .body{
-           
-            background-color: rgb(17, 179, 223);
-            height:100vh;
-             
-            display:flex;
-            align-items: center;
-            justify-content: center;
-            
-        }
-        .container{
-            background-color: antiquewhite;
-            padding: 40px 30px;
-            min-width: 320px;
-            border-radius: 300px;
-            
-        }
-        .container-label{
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-            
+<!DOCTYPE html>
+<html lang="en">
 
-             
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>campus-eye login page</title>
+   <style>
+      body {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         height: 100vh;
+      }
 
-        }
-
+      .login-box {
+         border: 1px solid black;
+         padding: 40px;
+         border-radius: 10px;
+         background-color:  #f4f4f4;
+         box-shadow: 0px 0px 10px gray;
+      }
+      .box1{
+         background-color: blue;
+         color: white;
+         padding: 10px;
+         border-radius: 10px;
+         width: 100%;
+         margin-bottom: 15px;
          
-    </style>
+      }
+   </style>
 
- </head>
- <body>
-    <h1>login page</h1>
-    <form class="container">
-        <lable class="box1">username</lable>
-        <br>
-        <input type="username" placeholder="enter your full name">
-        <br><br>
-        <lable class="box2">password</lable>
-        <br>
-        <input type="password" placeholder="enter you password">
-        <br><br>
-        <button type="submit">login</button>
-        
-    </form>
-    
- </body>
- </html>
+
+</head>
+
+<body>
+   <div class="login-box">
+      <h1>campus-eye</h1>
+      <p>smart campus complaint management</p>
+
+      <form>
+         <select>
+            <option>Student</option>
+            <option>Admin</option>
+         </select>
+         <br><br>
+
+
+         <label>Email</label>
+         <br>
+         <input type="email" placeholder="enter your college email">
+         <br><br>
+         <label>password</label>
+         <br>
+         <input type="password" placeholder="enter you password">
+         <br><br>
+
+         <button class="box1" type="submit">login</button>
+         <br><br>
+         <p>dont have an account? register</p>
+         <br><br>
+
+         <a href="#">forgot password</a>
+
+
+      </form>
+
+
+   </div>
+
+</body>
+
+</html>
