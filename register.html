@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>register</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .register-box {
+            border: 2px solid rgb(42, 1, 1);
+            border-radius: 10px;
+            padding: 30px;
+            background-color: rgb(238, 241, 241);
+            box-shadow: 0px 0px 10px rgb(28, 1, 1);
+            width: 400px;
+
+        }
+
+        button {
+            background-color: blue;
+            color: white;
+            width: 100%;
+            padding: 10px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border:none;
+             
+        }
+        button:hover{
+            background-color: darkblue;
+            transform:scale(1.99);
+        }
+        input,
+        select{
+            width:100%;
+            padding: 10px;
+            border-radius:8px;
+        }
+        label{
+            display: block;
+            margin-top:15px;
+            margin-bottom:  5px;
+        }
+
+
+         
+    </style>
+
+</head>
+
+<body>
+    <div class="register-box">
+        <form>
+            <h1>CampusEye</h1>
+            <p>Smart Campus complaint system</p>
+            <label>Full Name</label>
+            <input type="text" required  placeholder="enter your full name">
+            
+            <label>College Email</label>
+
+            <input type="email" required placeholder="enter your college email">
+            
+            <label>Roll Number</label>
+            <input type="text" placeholder="enter your college  roll no.">
+            
+            <label>Department</label>
+            <select>
+                <option selected disabled>select Department</option>
+                <option>CSE</option>
+                <option>IT</option>
+                <option>ECE</option>
+                <option>AGRI</option>
+                <option>BIOTECHNOLOGY</option>
+                <option>CHiNESE</option>
+            </select>
+            
+            <label>year</label>
+            <select>
+                <option selected disabled>select year</option>
+                <option>1st</option>
+                <option>2nd</option>
+                <option>3rd</option>
+                <option>4th</option>
+            </select>
+            
+            <label>password</label>
+            <input type="password">
+            
+            <label>confirm password</label>
+            <input type="password">
+            <br><br>
+            
+            <button>Register</button>
+            
+            <P>already have an account?</P>
+            <a href="login.html">login</a>
+
+
+        </form>
+
+
+
+
+    </div>
+
+</body>
+
+</html>
