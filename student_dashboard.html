@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: whitesmoke
+        }
+
+        .dashboard {
+            width: 900px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid lightgray;
+            padding: 20px;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+
+        }
+
+
+        .card {
+            flex: 1;
+            border: 2px solid lightgray;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+            min-height: 180px;
+
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+
+
+        }
+
+        .card p {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: rgb(255, 0, 8);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            /* transform: scale(1.05); */
+            box-shadow: 0 5px 15px gray;
+        }
+
+        .summary {
+            margin-top: 40px;
+        }
+
+        .summary h2 {
+            text-align: center;
+            margin-bottom: 20px;
+
+        }
+
+        .actions {
+            margin-top: 30px;
+
+        }
+
+        .actions h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .actions button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: royalblue;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .actions button:hover {
+            transform: scale(1.02);
+            background-color: darkblue;
+        }
+    </style>
+
+
+
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>CampusEye</h1>
+            <p>welcome back to Student dashboard!</p>
+
+
+        </div>
+        <div class="summary">
+            <h2>complaint summary</h2>
+            <div class="cards">
+
+                <div class="card">
+                    <h3>total complaints</h3>
+                    <p>3</p>
+                </div>
+
+
+                <div class="card">
+                    <h3>pending</h3>
+                    <p>3</p>
+                </div>
+
+
+                <div class="card">
+                    <h3>resolved</h3>
+                    <p>3</p>
+                </div>
+
+
+            </div>
+
+        </div>
+        <div class="actions">
+            <h2>quick action</h2>
+            <button> ➕report complaint</button>
+            <button> 📋my complaint</button>
+            <button>👤 profile</button>
+            <button> 🚪logout</button>
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+
+</body>
+
+</html>
