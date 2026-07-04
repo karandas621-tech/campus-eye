@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>report complaints page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color:  whitesmoke;
+            height:150vh;
+        }
+        .complaint-box{
+            text-align: left;
+            padding: 30px;
+            width: 80%;
+            max-width: 900px;
+            background-color:white;
+            borde-radius: 10px;
+            box-shadow:0 0 10px gray;
+        }
+        input:not([type="file"]),select,textarea{
+            width: 100%;
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin-bottom: 10px;
+            border: 1px solid lightgray;
+            border-radius:10px;
+            font-size: 16px;
+
+
+        }
+        .submit{
+            background:#4169e1;
+            color: aliceblue;
+            padding: 10px;
+            margin: 10px;
+            width: 100%;
+            border:1px solid gray;
+            border-radius:10px;
+            cursor: pointer;
+            transition:0.2s ;
+
+
+        }
+        .submit:hover{
+            background-color: blue;
+            transform: translateY(-2px)
+        }
+        .header{
+            
+            text-align: center;
+             margin-bottom:40px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <div class="complaint-box">
+        <div class="header">
+             <h1> CampusEye</h1>
+        <h2>report complaint</h2>
+        <p>help us improve your campus</p>
+        <br>
+
+        </div>
+        
+        <form>
+            <label>complaint title </label>
+            <br>
+
+            <input type="text" placeholder="enter complaint title" <br><br><br>
+
+
+            <label>category</label>
+            <br>
+            <select>
+                <option selected disabled>options</option>
+                <option>Electrical</option>
+                <option>Water</option>
+                <option>Cleanliness</option>
+                <option>Internet</option>
+                <option>Hostel</option>
+                <option>Classroom</option>
+
+            </select>
+            <br><br>
+
+
+            <br><br>
+            <label>location</label>
+            <br>
+            <select >
+                <option selected disabled>choose location</option>
+                <option>libray</option>
+                <option>hostel</option>
+                <option>camteen</option>
+                <option>classroom</option>
+                <option> bus parking </option>
+            </select>
+             
+            <br><br>
+            <label>description</label>
+            <br>
+            <textarea rows="7" placeholder="describe your complaint"></textarea>
+            <br><br>
+            <label>priority</label>
+            <br>
+            <select>
+                <option selected disabled>options</option>
+                <option>low</option>
+                <option>medium</option>
+                <option>high</option>
+            </select>
+            <br><br>
+
+            <label>upload image</label>
+            <br>
+            <input type="file" accept="image/*">
+            <br><br>
+            <button class="submit">submit complaint</button>
+
+
+
+
+
+
+
+        </form>
+
+
+    </div>
+
+</body>
+
+</html>
