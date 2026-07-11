@@ -33,14 +33,15 @@
 
 
 </head>
+ 
 
 <body>
    <div class="login-box">
       <h1>campus-eye</h1>
       <p>smart campus complaint management</p>
 
-      <form>
-         <select>
+      <form id="loginForm">
+         <select id="role">
             <option>Student</option>
             <option>Admin</option>
          </select>
@@ -49,11 +50,11 @@
 
          <label>Email</label>
          <br>
-         <input type="email" placeholder="enter your college email">
+         <input type="email" id="email" placeholder="enter your college email">
          <br><br>
          <label>password</label>
          <br>
-         <input type="password" placeholder="enter you password">
+         <input type="password" id="password" placeholder="enter you password">
          <br><br>
 
          <button class="box1" type="submit">login</button>
@@ -69,6 +70,8 @@
 
 
    </div>
+   <script src="login.js"></script>
+    
 
 </body>
 
