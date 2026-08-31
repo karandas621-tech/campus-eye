@@ -34,8 +34,5 @@ form.addEventListener("submit", function (event) {
     greet();
     showDetails(role,email,password);
         
-    
-
-
 });
 
