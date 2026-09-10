@@ -1,0 +1,41 @@
+{
+  "users": [
+    {
+      "id": 0,
+      "fullName": "Admin User",
+      "email": "admin@college.edu",
+      "rollNumber": "ADMIN001",
+      "department": "Administration",
+      "year": "N/A",
+      "password": "admin123",
+      "role": "Admin"
+    },
+    {
+      "id": 1,
+      "fullName": "karan das",
+      "email": "karandas621@gmail.com",
+      "rollNumber": "2403375",
+      "department": "CSE",
+      "year": "3rd",
+      "password": "karan",
+      "role": "Student"
+    }
+  ],
+  "complaints": [
+    {
+      "id": 1,
+      "title": "water ki kami haiii bhaiii",
+      "category": "Water",
+      "location": "Canteen",
+      "description": "paniiii",
+      "priority": "High",
+      "status": "pending",
+      "studentId": 1,
+      "studentName": "karan das",
+      "date": "2026-09-10",
+      "image": null
+    }
+  ],
+  "nextUserId": 2,
+  "nextComplaintId": 2
+}

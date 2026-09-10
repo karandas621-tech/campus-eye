@@ -7,6 +7,9 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
+const fs = require('fs');
+const DATA_FILE = path.join(__dirname, 'data.json');
+
 const app = express();
 const PORT = 3000;
 
@@ -18,23 +21,55 @@ app.use(express.static(path.join(__dirname, '../'))); // Serve frontend files
 // ============================================
 // IN-MEMORY DATABASE (resets on restart)
 // ============================================
-let users = [];
+ let users = [];
 let complaints = [];
 let nextUserId = 1;
 let nextComplaintId = 1;
 
-// Pre-load a demo admin
-users.push({
-  id: 0,
-  fullName: 'Admin User',
-  email: 'admin@college.edu',
-  rollNumber: 'ADMIN001',
-  department: 'Administration',
-  year: 'N/A',
-  password: 'admin123',
-  role: 'Admin'
-});
+function loadData() {
+  if (fs.existsSync(DATA_FILE)) {
+    try {
+      const raw = fs.readFileSync(DATA_FILE, 'utf8');
+      const data = JSON.parse(raw);
+      users = data.users || [];
+      complaints = data.complaints || [];
+      nextUserId = data.nextUserId || 1;
+      nextComplaintId = data.nextComplaintId || 1;
+      console.log('Data loaded from data.json');
+    } catch (err) {
+      console.log('Error loading data, starting fresh.');
+    }
+  }
 
+  // If no admin exists, create demo admin
+  const hasAdmin = users.find(u => u.role === 'Admin');
+  if (!hasAdmin) {
+    users.push({
+      id: 0,
+      fullName: 'Admin User',
+      email: 'admin@college.edu',
+      rollNumber: 'ADMIN001',
+      department: 'Administration',
+      year: 'N/A',
+      password: 'admin123',
+      role: 'Admin'
+    });
+    saveData();
+  }
+}
+
+function saveData() {
+  const data = {
+    users,
+    complaints,
+    nextUserId,
+    nextComplaintId
+  };
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+}
+
+// Load data when server starts
+loadData();
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
@@ -89,6 +124,7 @@ app.post('/api/register', (req, res) => {
   };
 
   users.push(newUser);
+  saveData();
 
   res.json({
     success: true,
@@ -171,6 +207,7 @@ app.post('/api/complaints', (req, res) => {
   };
 
   complaints.push(newComplaint);
+  saveData();
 
   res.json({
     success: true,
@@ -226,6 +263,7 @@ app.put('/api/complaints/:id/status', (req, res) => {
   }
 
   complaint.status = status;
+  saveData();
 
   res.json({ success: true, message: 'Status updated', complaint });
 });
@@ -257,7 +295,7 @@ app.listen(PORT, () => {
   console.log('============================================');
   console.log('');
   console.log('Demo Admin Login:');
-  console.log('  Email: admin@college.edu');
+  console.log('  Email: karandas6211@gmail.com');
   console.log('  Password: admin123');
   console.log('  Role: Admin');
   console.log('');
