@@ -34,8 +34,21 @@
       "studentName": "karan das",
       "date": "2026-09-10",
       "image": null
+    },
+    {
+      "id": 2,
+      "title": "electrical",
+      "category": "Electrical",
+      "location": "Hostel",
+      "description": "no voltage",
+      "priority": "High",
+      "status": "pending",
+      "studentId": 1,
+      "studentName": "karan das",
+      "date": "2026-09-10",
+      "image": "/uploads/1789053148894-888850367.jpeg"
     }
   ],
   "nextUserId": 2,
-  "nextComplaintId": 2
+  "nextComplaintId": 3
 }

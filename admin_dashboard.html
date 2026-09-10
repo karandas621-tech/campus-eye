@@ -1,11 +1,17 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusEye - Admin Dashboard</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             display: flex;
             justify-content: center;
@@ -14,11 +20,13 @@
             padding: 40px;
             font-family: Arial, sans-serif;
         }
+
         .header {
             text-align: center;
             padding: 20px;
             margin-bottom: 40px;
         }
+
         .dashboard {
             width: 900px;
             padding: 40px;
@@ -27,6 +35,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px lightgray;
         }
+
         .summary {
             display: flex;
             justify-content: center;
@@ -34,6 +43,7 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
+
         .card {
             flex: 1;
             min-width: 150px;
@@ -44,12 +54,14 @@
             box-shadow: 0 0 10px gray;
             background-color: lightblue;
         }
+
         .card p {
             font-size: 30px;
             font-weight: bold;
             color: blue;
             margin-top: 10px;
         }
+
         .complaint-card {
             margin-bottom: 20px;
             padding: 20px;
@@ -59,12 +71,14 @@
             margin-top: 20px;
             background: white;
         }
+
         select {
             padding: 8px;
             border-radius: 5px;
             margin-top: 10px;
             margin-right: 10px;
         }
+
         .update-btn {
             padding: 8px 16px;
             background-color: green;
@@ -73,7 +87,12 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .update-btn:hover { background-color: blue; transform: scale(1.05); }
+
+        .update-btn:hover {
+            background-color: blue;
+            transform: scale(1.05);
+        }
+
         .logout {
             background: red;
             color: white;
@@ -83,19 +102,25 @@
             cursor: pointer;
             margin-top: 10px;
         }
-        .logout:hover { background: darkred; }
+
+        .logout:hover {
+            background: darkred;
+        }
+
         .search {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
             align-items: center;
         }
+
         .search input {
             flex: 1;
             padding: 8px;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
+
         .search button {
             padding: 8px 16px;
             background: royalblue;
@@ -104,12 +129,17 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .filter-box { margin-bottom: 20px; }
+
+        .filter-box {
+            margin-bottom: 20px;
+        }
+
         .no-data {
             text-align: center;
             color: #888;
             padding: 40px;
         }
+
         .badge {
             display: inline-block;
             padding: 4px 12px;
@@ -118,11 +148,21 @@
             font-weight: bold;
             color: white;
         }
-        .badge-pending { background: #e74c3c; }
-        .badge-progress { background: #3498db; }
-        .badge-resolved { background: #2ecc71; }
+
+        .badge-pending {
+            background: #e74c3c;
+        }
+
+        .badge-progress {
+            background: #3498db;
+        }
+
+        .badge-resolved {
+            background: #2ecc71;
+        }
     </style>
 </head>
+
 <body>
     <div class="dashboard">
         <div class="header">
@@ -216,6 +256,8 @@
                         <option value="resolved" ${c.status === 'resolved' ? 'selected' : ''}>Resolved</option>
                     </select>
                     <button class="update-btn" onclick="updateStatus(${c.id})">Update</button>
+                    ${c.image ? `<p><strong>Image:</strong><br><img src="http://localhost:3000${c.image}" style="max-width:200px; border-radius:8px; margin-top:5px;"></p>` : ''}
+                    
                 </div>`;
             }).join('');
         }
@@ -236,4 +278,5 @@
         loadComplaints();
     </script>
 </body>
+
 </html>

@@ -74,79 +74,95 @@
             <h2>Report Complaint</h2>
             <p>Help us improve your campus</p>
         </div>
-        <form id="complaintForm">
-            <label>Complaint Title</label>
-            <input type="text" id="title" placeholder="Enter complaint title" required>
+        <form id="complaintForm" enctype="multipart/form-data">
+    <label>Complaint Title</label>
+    <input type="text" id="title" placeholder="Enter complaint title" required>
 
-            <label>Category</label>
-            <select id="category" required>
-                <option selected disabled value="">Select Category</option>
-                <option>Electrical</option>
-                <option>Water</option>
-                <option>Cleanliness</option>
-                <option>Internet</option>
-                <option>Hostel</option>
-                <option>Classroom</option>
-            </select>
+    <label>Category</label>
+    <select id="category" required>
+        <option selected disabled value="">Select Category</option>
+        <option>Electrical</option>
+        <option>Water</option>
+        <option>Cleanliness</option>
+        <option>Internet</option>
+        <option>Hostel</option>
+        <option>Classroom</option>
+    </select>
 
-            <label>Location</label>
-            <select id="location" required>
-                <option selected disabled value="">Choose Location</option>
-                <option>Library</option>
-                <option>Hostel</option>
-                <option>Canteen</option>
-                <option>Classroom</option>
-                <option>Bus Parking</option>
-            </select>
+    <label>Location</label>
+    <select id="location" required>
+        <option selected disabled value="">Choose Location</option>
+        <option>Library</option>
+        <option>Hostel</option>
+        <option>Canteen</option>
+        <option>Classroom</option>
+        <option>Bus Parking</option>
+    </select>
 
-            <label>Description</label>
-            <textarea id="description" rows="5" placeholder="Describe your complaint" required></textarea>
+    <label>Description</label>
+    <textarea id="description" rows="5" placeholder="Describe your complaint" required></textarea>
 
-            <label>Priority</label>
-            <select id="priority" required>
-                <option selected disabled value="">Select Priority</option>
-                <option>Low</option>
-                <option>Medium</option>
-                <option>High</option>
-            </select>
+    <label>Priority</label>
+    <select id="priority" required>
+        <option selected disabled value="">Select Priority</option>
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+    </select>
 
-            <label>Upload Image (optional)</label>
-            <input type="file" id="image" accept="image/*">
+    <label>Upload Image (optional)</label>
+    <input type="file" id="image" name="image" accept="image/*">
 
-            <button class="submit" type="submit">Submit Complaint</button>
-            <p id="msg"></p>
-        </form>
-    </div>
+    <button class="submit" type="submit">Submit Complaint</button>
+    <p id="msg"></p>
+</form>
 
-    <script src="campus-eye-backend/frontend-api.js"></script>
-    <script>
-        requireAuth();
-        requireRole('Student');
-        const user = getUser();
+<script src="campus-eye-backend/frontend-api.js"></script>
+<script>
+    requireAuth();
+    requireRole('Student');
+    const user = getUser();
 
-        document.getElementById('complaintForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const msg = document.getElementById('msg');
+    document.getElementById('complaintForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const msg = document.getElementById('msg');
 
-            const res = await apiCall('/complaints', 'POST', {
-                title: document.getElementById('title').value,
-                category: document.getElementById('category').value,
-                location: document.getElementById('location').value,
-                description: document.getElementById('description').value,
-                priority: document.getElementById('priority').value,
-                studentId: user.id
+        // Use FormData for file upload
+        const formData = new FormData();
+        formData.append('title', document.getElementById('title').value);
+        formData.append('category', document.getElementById('category').value);
+        formData.append('location', document.getElementById('location').value);
+        formData.append('description', document.getElementById('description').value);
+        formData.append('priority', document.getElementById('priority').value);
+        formData.append('studentId', user.id);
+
+        const imageFile = document.getElementById('image').files[0];
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
+
+        try {
+            const res = await fetch('http://localhost:3000/api/complaints', {
+                method: 'POST',
+                body: formData
+                // Note: Do NOT set Content-Type header - browser sets it automatically with boundary
             });
+            const data = await res.json();
 
-            if (res.success) {
+            if (data.success) {
                 msg.className = 'success';
                 msg.textContent = 'Complaint submitted successfully!';
                 document.getElementById('complaintForm').reset();
                 setTimeout(() => location.href = 'my_complaint_page.html', 1500);
             } else {
                 msg.className = 'error';
-                msg.textContent = res.message;
+                msg.textContent = data.message;
             }
-        });
-    </script>
+        } catch (err) {
+            msg.className = 'error';
+            msg.textContent = 'Error: ' + err.message;
+        }
+    });
+</script>
 </body>
 </html>
